@@ -180,6 +180,7 @@
     	<property name="resultAttributeMapping">
     	<!-- 返回用户属性信息  -->
 		 <map>
+
         <entry key="id" value="id" />
 	    <entry key="username" value="username"/>
 	    <entry key="password" value="password"/>
