@@ -1,6 +1,5 @@
 package org.jasig.cas.web.flow;
 
-import com.sun.deploy.net.URLEncoder;
 import net.sf.json.JSONObject;
 import org.jasig.cas.thrift.server.UserSupDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,24 +35,30 @@ public class EditUserPasswordController extends AbstractController{
         String password = httpServletRequest.getParameter("password");
         String newPassword = httpServletRequest.getParameter("newPassword");
         try {
-            username = username.isEmpty()?"":URLEncoder.encode(username,"utf8");
-            password = password.isEmpty()?"":URLEncoder.encode(password,"utf8");
-            newPassword = newPassword.isEmpty()?"":URLEncoder.encode(newPassword,"utf8");
+            username = username!=null?username:"";
+            password = password!=null?password:"";
+            newPassword = newPassword!=null?newPassword:"";
             boolean isExistUser = userSupDao.existUser(username);
-            if(isExistUser && !newPassword.equals("")) {
-                boolean isTrue = userSupDao.editPassword(username,password,newPassword);
-                if(isTrue)
-                    jo.element("state", true);
-                else{
+            if(isExistUser && !newPassword.equals("") && !password.equals("")) {
+                boolean validatePassword = userSupDao.isTruePassword(username,password);
+                if(validatePassword) {
+                    boolean isTrue = userSupDao.editPassword(username, newPassword);
+                    if (isTrue)
+                        jo.element("state", true);
+                    else {
+                        jo.element("state", false);
+                        jo.element("errMsg", "旧密码与新密码相同");
+                    }
+                }else{
                     jo.element("state",false);
-                    jo.element("errMsg","旧密码与新密码相同");
+                    jo.element("errMsg","旧密码不正确");
                 }
             }else if(!isExistUser){
                 jo.element("state",false);
                 jo.element("errMsg","账号不存在");
             }else{
                 jo.element("state",false);
-                jo.element("errMsg","新密码不能为空");
+                jo.element("errMsg",!password.equals("")?"新密码不能为空":"旧密码不能为空");
             }
         } catch (Exception e) {
             jo.element("state",false);

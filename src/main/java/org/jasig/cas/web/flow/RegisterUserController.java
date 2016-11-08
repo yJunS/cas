@@ -35,10 +35,15 @@ public class RegisterUserController extends AbstractController {
         String email = request.getParameter("email");
         String md5 = request.getParameter("md5");
         String mobile = request.getParameter("mobile");
+        username = username!=null?username:"";
+        password = password!=null?password:"";
+        email = email!=null?email:"";
+        mobile = mobile!=null?mobile:"";
+        md5 = md5!=null?md5:"";
         boolean isExistUser = userSupDao.existUser(username);
         JSONObject jo = new JSONObject();
         boolean isTrue = false;
-        if(!md5.isEmpty()) {
+        if(!md5.isEmpty() && !username.isEmpty() && !password.isEmpty() && !email.isEmpty()) {
             String newmd5 = "";
             try {
                 newmd5 = MD5.getMD5(("_"+username+password+email).getBytes());
@@ -61,7 +66,15 @@ public class RegisterUserController extends AbstractController {
             }
         }else{
             jo.element("state",false);
-            jo.element("errMsg","验证密钥不能为空");
+            if(username.isEmpty()){
+                jo.element("errMsg", "用户名不能为空");
+            }else if (password.isEmpty()){
+                jo.element("errMsg", "密码不能为空");
+            }else if(email.isEmpty()){
+                jo.element("errMsg", "邮箱不能为空");
+            }else {
+                jo.element("errMsg", "验证密钥不能为空");
+            }
         }
         response.setContentType("text/json");
         response.setCharacterEncoding("UTF-8");

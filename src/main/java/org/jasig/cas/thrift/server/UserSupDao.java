@@ -77,13 +77,42 @@ public class UserSupDao extends StubPersonAttributeDao {
         Map<String,String> map = new HashMap<String,String>();
         map.put("username",username);
         map.put("password",password);
-//        String as = httpClientUtil.doGet("http://mymeeting.ceecloud.cn/CasUserSync_syncCasUser.action","username="+username+"&password="+password+"&casId="+count1);
-//        String as1 = httpClientUtil.doGet("http://live.ceecloud.cn:8889/CasUserSync_syncCasUser.action","username="+username+"&password="+password+"&casId="+count1);
+        String as = httpClientUtil.doGet("http://mymeeting.ceecloud.cn/CasUserSync_syncCasUser.action","username="+username+"&password="+password+"&casId="+count1);
+        String as1 = httpClientUtil.doGet("http://live.ceecloud.cn:8889/CasUserSync_syncCasUser.action","username="+username+"&password="+password+"&casId="+count1);
 //        System.out.println(as);
         return true;
     }
 
-    public boolean editPassword(String username,String password,String newpassword){
+    public boolean isTruePassword(String username,String password){
+        String sql = "";
+        sql = "select * from t_user where username = ? and state = 1";
+        final org.jasig.cas.entity.User user =myjdbcTemplate.queryForObject(sql,new Object[]{username}, new RowMapper<org.jasig.cas.entity.User>() {
+
+            @Override
+            public org.jasig.cas.entity.User mapRow(ResultSet rs, int rowNum)
+                    throws SQLException {
+                org.jasig.cas.entity.User user = new org.jasig.cas.entity.User();
+                user.setState(rs.getInt("state"));
+                user.setUsername(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
+                user.setLock(rs.getBoolean("isLock"));
+                user.setCredentialsSalt(rs.getString("credentialsSalt"));
+                return user;
+            }
+        });
+        PasswordHelper passwordHelper = new PasswordHelper();
+        org.jasig.cas.entity.User user1 = new org.jasig.cas.entity.User();
+        user1.setUsername(username);
+        user1.setPassword(password);
+        user1.setCredentialsSalt(user.getCredentialsSalt());
+        user1 = passwordHelper.encryptPassword(user1);
+        if(user.getPassword().equals(user1.getPassword()))
+            return true;
+        else
+            return false;
+    }
+
+    public boolean editPassword(String username,String newpassword){
         String sql = "";
         sql = "select * from t_user where username = ? and state = 1";
         final org.jasig.cas.entity.User user =myjdbcTemplate.queryForObject(sql,new Object[]{username}, new RowMapper<org.jasig.cas.entity.User>() {

@@ -159,4 +159,5 @@ public final class RedisTicketRegistry extends AbstractDistributedTicketRegistry
         }
         throw new IllegalArgumentException("Invalid ticket type");
     }
+
 }

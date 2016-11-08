@@ -68,5 +68,4 @@ public class ObjectsTranscoder<M extends Serializable> extends SerializeTranscod
         }
         return result;
     }
-
 }

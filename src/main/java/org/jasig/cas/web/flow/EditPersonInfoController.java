@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URLEncoder;
 
 /**
  * Created by SyJun on 2016/9/27.
@@ -35,24 +34,29 @@ public class EditPersonInfoController extends AbstractController {
         String name = httpServletRequest.getParameter("name");
         String email = httpServletRequest.getParameter("email");
         String mobile = httpServletRequest.getParameter("mobile");
-        username = username.isEmpty()?"": URLEncoder.encode(username,"utf-8");
-        name = name.isEmpty()?"":new String(name.getBytes("iso8859-1"),"utf-8");
-        email = email.isEmpty()?"":new String(email.getBytes("iso8859-1"),"utf-8");
-        mobile = mobile.isEmpty()?"":URLEncoder.encode(mobile,"utf-8");
+        username = username==null?"": username;
+        name = name==null?"":new String(name.getBytes("iso8859-1"),"utf-8");
+        email = email==null?"":email;
+        mobile = mobile==null?"":mobile;
         JSONObject jo = new JSONObject();
         try {
             boolean isExistUser = userSupDao.existUser(username);
-            if(isExistUser) {
-                boolean isTrue = userSupDao.editUserInfo(username,name,email,mobile);
-                if(isTrue)
-                    jo.element("state",true);
-                else{
-                    jo.element("state",false);
-                    jo.element("errMsg","未知异常");
+            if(!username.equals("")) {
+                if (isExistUser) {
+                    boolean isTrue = userSupDao.editUserInfo(username, name, email, mobile);
+                    if (isTrue)
+                        jo.element("state", true);
+                    else {
+                        jo.element("state", false);
+                        jo.element("errMsg", "未知异常");
+                    }
+                } else {
+                    jo.element("state", false);
+                    jo.element("errMsg", "账号不存在");
                 }
             }else{
                 jo.element("state",false);
-                jo.element("errMsg","账号不存在");
+                jo.element("errMsg","用户名不能为空");
             }
         } catch (Exception e) {
             jo.element("state",false);

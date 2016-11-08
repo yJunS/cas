@@ -26,4 +26,5 @@ public class TicketRedisTemplate extends RedisTemplate<String, Ticket> {
         setConnectionFactory(connectionFactory);
         afterPropertiesSet();
     }
+
 }
