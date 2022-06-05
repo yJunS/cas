@@ -37,7 +37,7 @@
  <dependency>
     <groupId>org.jasig.cas</groupId>
     <artifactId>cas-server-integration-restlet</artifactId>
-    <version>4.0.0</version>
+    <version>4.1.10</version>
 </dependency>
 
     
@@ -63,7 +63,7 @@
      <dependency>
          <groupId>org.pac4j</groupId>
          <artifactId>pac4j-http</artifactId>
-         <version>1.4.1</version>
+         <version>5.4.3</version>
      </dependency>
        <dependency>
            <groupId>org.pac4j</groupId>
