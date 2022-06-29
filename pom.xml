@@ -37,7 +37,7 @@
  <dependency>
     <groupId>org.jasig.cas</groupId>
     <artifactId>cas-server-integration-restlet</artifactId>
-    <version>4.0.0</version>
+    <version>4.1.10</version>
 </dependency>
 
     
