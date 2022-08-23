@@ -73,7 +73,7 @@
             <dependency>
                 <groupId>org.pac4j</groupId>
                 <artifactId>pac4j-core</artifactId>
-                <version>5.4.3</version>
+                <version>5.4.6</version>
             </dependency>
 
 
